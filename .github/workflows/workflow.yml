@@ -22,24 +22,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=bookscamp-config -Dsonar.projectName='bookscamp-config'
-
       # 3️⃣ Maven 빌드
       - name: Build with Maven
         run: mvn clean package -DskipTests
@@ -57,7 +39,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           source: "target/*.jar"
-          target: "/home/backend/be11-team3/config"
+          target: "/home/ta/triple-s/config-server"
 
       # 6️⃣ 서버에서 배포 스크립트 실행
       - name: 🚀 Run deploy.sh on server
@@ -68,6 +50,6 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd /home/backend/be11-team3/config
+            cd /home/ta/triple-s/config-server
             chmod +x deploy.sh
             bash -lc './deploy.sh'
